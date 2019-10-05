@@ -12,18 +12,12 @@ namespace CustomLibrary.Services
     {
         
         public bool AddOrder(Order order)
-        {
-            //TO DO - DONE
-            //Check if order has at least one test
-           if(order.OrderTests.Any<Test>())
+        {            
+           if(order.OrderTests.Any())
             {
-
                 Store.OrdersMemoryCollection.Add(order);
                 return true;
-
-
             }            
-
             return false;
         }
 
@@ -36,30 +30,16 @@ namespace CustomLibrary.Services
         {
             throw new NotImplementedException();
         }
-
-        
-      
+              
         public bool CancelOrder(int orderId)
         {
-            //TO DO - DONE
-            //Add validation for orderId < 0
-            if (orderId < 0)
-            {
-                throw new ArgumentOutOfRangeException("Order ID couldn't be negative");
-            }
-            Order order = GetOrderById(orderId);
-            if (order == null)
-            {
-                throw new NullReferenceException("Order cann't be NULL!");
-            }
-
+            Order order = ValidateOrderIdInColletion(orderId);
             bool IsOrderCanceled = order.IsCanceledOrder;
             if (!IsOrderCanceled)
             {
                 order.IsCanceledOrder = true;
                 return true;
             }
-
             return false;
         }
 
@@ -70,13 +50,22 @@ namespace CustomLibrary.Services
 
         public void AddTests(int orderId, List<Test> tests)
         {
+            Order order = ValidateOrderIdInColletion(orderId);            
+            order.OrderTests.AddRange(tests);
+        }
+
+        public Order ValidateOrderIdInColletion(int orderId)
+        {
+            if (orderId < 0)
+            {
+                throw new ArgumentOutOfRangeException("Order ID couldn't be negative");
+            }
             Order order = GetOrderById(orderId);
             if (order == null)
             {
                 throw new NullReferenceException("Order cann't be NULL!");
             }
-
-            order.OrderTests.AddRange(tests);
+            return order;
         }
     }
 }
