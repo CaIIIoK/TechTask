@@ -17,8 +17,12 @@ namespace CustomLibrary.Services
             //Check if order has at least one test
            if(order.OrderTests.Any<Test>())
             {
+
                 Store.OrdersMemoryCollection.Add(order);
                 return true;
+
+
+
             }            
 
             return false;
