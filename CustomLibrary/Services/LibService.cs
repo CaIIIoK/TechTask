@@ -21,7 +21,7 @@ namespace CustomLibrary.Services
                 Store.OrdersMemoryCollection.Add(order);
                 return true;
 
-
+                // TO DO Add new logic to check order status
 
             }            
 
