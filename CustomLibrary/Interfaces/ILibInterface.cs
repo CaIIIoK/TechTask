@@ -13,6 +13,8 @@ namespace CustomLibrary.Interfaces
 
         bool CancelOrder(int orderId);
 
+        bool CancelTest(int orderId, int testId);
+
         Order GetOrderById(int orderId);
 
         void AddTests(int orderId, List<Test> tests);

@@ -67,5 +67,18 @@ namespace CustomLibrary.Services
             }
             return order;
         }
+
+        public bool CancelTest(int orderId, int testId)
+        {
+            Order order = ValidateOrderIdInColletion(orderId);
+            Test test = order.OrderTests.Find(x => x.TestId == testId);            
+            bool IsTestCanceled = test.IsCanceledTest;
+            if(!IsTestCanceled)
+            {
+                test.IsCanceledTest = true;
+                return true;
+            }            
+            return false;
+        }
     }
 }

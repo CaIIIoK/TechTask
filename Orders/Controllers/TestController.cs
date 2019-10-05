@@ -33,6 +33,13 @@ namespace Orders.Controllers
         }
 
         // GET api/values
+        [HttpPut("{orderId}/tests/{testId}")]
+        public ActionResult<bool> CancelTest(int orderId, int testId)
+        {
+            return _libService.CancelTest(orderId, testId);
+        }
+
+        // GET api/values
         [HttpGet("all")]
         public ActionResult<List<Order>> GetAllOrders(int id)
         {
