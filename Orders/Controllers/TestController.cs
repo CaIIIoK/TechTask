@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using CustomLibrary.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using TestProject.Filters;
 
 namespace Orders.Controllers
 {
@@ -14,45 +12,44 @@ namespace Orders.Controllers
     {
         private readonly ILibService _libService;
 
-        public OrdersController(ILibService libService) {
+        public OrdersController(ILibService libService)
+        {
             _libService = libService;
         }
 
-        // GET api/values
         [HttpGet("{id}")]
+        [ExceptionFilter]
         public ActionResult<Order> Get(int id)
         {
             return _libService.GetOrderById(id);
         }
 
-        // GET api/values
         [HttpPut("{id}")]
+        [ExceptionFilter]
         public ActionResult<bool> Cancel(int id)
         {
             return _libService.CancelOrder(id);
         }
 
-        // GET api/values
         [HttpPut("{orderId}/tests/{testId}")]
+        [ExceptionFilter]
         public ActionResult<bool> CancelTest(int orderId, int testId)
         {
             return _libService.CancelTest(orderId, testId);
         }
 
-        // GET api/values
         [HttpGet("all")]
+        [ExceptionFilter]
         public ActionResult<List<Order>> GetAllOrders(int id)
         {
             return _libService.GetAllOrders();
         }
 
-        // POST api/values
         [HttpPost("create")]
+        [ExceptionFilter]
         public ActionResult<bool> AddOder(Order order)
         {
             return _libService.AddOrder(order);
         }
-
-
     }
 }

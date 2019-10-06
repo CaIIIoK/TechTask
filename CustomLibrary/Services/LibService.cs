@@ -2,7 +2,6 @@
 using Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using MemoryStore;
 
@@ -10,14 +9,20 @@ namespace CustomLibrary.Services
 {
     public class LibService : ILibService
     {
-        
+
         public bool AddOrder(Order order)
-        {            
-           if(order.OrderTests.Any())
+        {
+            if ((order != null)&&(order.OrderTests != null))
             {
-                Store.OrdersMemoryCollection.Add(order);
-                return true;
-            }            
+                if(!IsOrderAlreadyExists(order.OrderId))
+                {
+                    if (order.OrderTests.Any())
+                    {
+                        Store.OrdersMemoryCollection.Add(order);
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 
@@ -30,7 +35,7 @@ namespace CustomLibrary.Services
         {
             throw new NotImplementedException();
         }
-              
+
         public bool CancelOrder(int orderId)
         {
             Order order = ValidateOrderIdInColletion(orderId);
@@ -45,12 +50,16 @@ namespace CustomLibrary.Services
 
         public Order GetOrderById(int orderId)
         {
+            if(orderId <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Order ID cant be negative or zero!");
+            }
             return Store.OrdersMemoryCollection.FirstOrDefault(x => x.OrderId == orderId);
         }
 
         public void AddTests(int orderId, List<Test> tests)
         {
-            Order order = ValidateOrderIdInColletion(orderId);            
+            Order order = ValidateOrderIdInColletion(orderId);
             order.OrderTests.AddRange(tests);
         }
 
@@ -71,13 +80,44 @@ namespace CustomLibrary.Services
         public bool CancelTest(int orderId, int testId)
         {
             Order order = ValidateOrderIdInColletion(orderId);
-            Test test = order.OrderTests.Find(x => x.TestId == testId);            
+            Test test = order.OrderTests.FirstOrDefault(x => x.TestId == testId);
+            if(test == null)
+            {
+                throw new NullReferenceException("Test can't be NULL");
+            }
             bool IsTestCanceled = test.IsCanceledTest;
-            if(!IsTestCanceled)
+            if (!IsTestCanceled)
             {
                 test.IsCanceledTest = true;
+                if (AreAllTestsInOrderCanceled(order.OrderTests))
+                {
+                    order.IsCanceledOrder = true;
+                }
                 return true;
-            }            
+            }
+            return false;
+        }
+
+        public bool AreAllTestsInOrderCanceled(List<Test> tests)
+        {
+            foreach (Test test in tests)
+            {
+                if (!test.IsCanceledTest)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool IsOrderAlreadyExists(int orderId)
+        {
+            List<Order> orders = GetAllOrders();
+            Order searchingOrder = orders.FirstOrDefault(x => x.OrderId == orderId);
+            if (searchingOrder != null)
+            {
+                return true;
+            }
             return false;
         }
     }
