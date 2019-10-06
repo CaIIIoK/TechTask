@@ -14,8 +14,8 @@ namespace LibUnitTests
 
         public LibTests()
         {
-            libService = new LibService();
-            Store.OrdersMemoryCollection.Clear();
+            libService = new LibService(true);
+            Store.Read(true).Clear();
         }
 
 

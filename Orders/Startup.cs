@@ -21,8 +21,9 @@ namespace Orders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddSingleton<ILibService, LibService>();
+            //TO DO
+            //Read from config file
+            services.AddSingleton<ILibService>(s => new LibService(true));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

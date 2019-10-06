@@ -9,6 +9,13 @@ namespace CustomLibrary.Services
 {
     public class LibService : ILibService
     {
+        bool _IsMemoryStore;
+
+        public LibService(bool IsMemoryStore)
+        {
+            _IsMemoryStore = IsMemoryStore;
+        }
+
         public bool AddOrder(Order order)
         {
             if (order != null && order.OrderTests != null)
@@ -17,7 +24,7 @@ namespace CustomLibrary.Services
                 {
                     if (order.OrderTests.Any())
                     {
-                        Store.OrdersMemoryCollection.Add(order);
+                        Store.Add(order, _IsMemoryStore);
 
                         return true;
                     }
@@ -29,7 +36,7 @@ namespace CustomLibrary.Services
 
         public List<Order> GetAllOrders()
         {
-            return Store.OrdersMemoryCollection;
+            return Store.Read(_IsMemoryStore);
         }
 
         public bool CancelOrder(int orderId)
@@ -40,7 +47,7 @@ namespace CustomLibrary.Services
             if (!IsOrderCanceled)
             {
                 order.IsCanceledOrder = !order.IsCanceledOrder;
-
+                Store.Update(order, _IsMemoryStore);
                 return true;
             }
 
@@ -54,7 +61,7 @@ namespace CustomLibrary.Services
                 throw new ArgumentOutOfRangeException("Order ID cant be negative or zero!");
             }
 
-            return Store.OrdersMemoryCollection.FirstOrDefault(x => x.OrderId == orderId);
+            return Store.Read(_IsMemoryStore).FirstOrDefault(x => x.OrderId == orderId);
         }
 
         public void AddTests(int orderId, List<Test> tests)
@@ -99,6 +106,7 @@ namespace CustomLibrary.Services
                 if (AreAllTestsInOrderCanceled(order.OrderTests))
                 {
                     order.IsCanceledOrder = true;
+                    Store.Update(order, _IsMemoryStore);
                 }
 
                 return true;
