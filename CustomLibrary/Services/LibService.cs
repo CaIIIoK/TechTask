@@ -14,12 +14,13 @@ namespace CustomLibrary.Services
         {
             if ((order != null)&&(order.OrderTests != null))
             {
-
-
-                if (order.OrderTests.Any())
+                if(!IsOrderAlreadyExists(order.OrderId))
                 {
-                    Store.OrdersMemoryCollection.Add(order);
-                    return true;
+                    if (order.OrderTests.Any())
+                    {
+                        Store.OrdersMemoryCollection.Add(order);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -107,6 +108,17 @@ namespace CustomLibrary.Services
                 }
             }
             return true;
+        }
+
+        public bool IsOrderAlreadyExists(int orderId)
+        {
+            List<Order> orders = GetAllOrders();
+            Order searchingOrder = orders.FirstOrDefault(x => x.OrderId == orderId);
+            if (searchingOrder != null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

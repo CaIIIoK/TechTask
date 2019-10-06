@@ -37,5 +37,17 @@ namespace LibUnitTests
 
             Assert.True(IsOrderAdded);
         }
+
+        [Fact]
+        public void AddOrder_WhenOrderIdIsNotUnique_ReturnsFalse()
+        {
+            Order order = new Order();
+            order.OrderTests = new List<Test>();
+            order.OrderTests.Add(new Test());
+
+            bool IsOrderIdUnique = libService.AddOrder(order);
+
+            Assert.True(IsOrderIdUnique);
+        }
     }
 }
