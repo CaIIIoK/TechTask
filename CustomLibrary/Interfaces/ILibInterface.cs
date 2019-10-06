@@ -1,5 +1,4 @@
 ﻿using Models;
-using System;
 using System.Collections.Generic;
 
 namespace CustomLibrary.Interfaces
@@ -7,8 +6,6 @@ namespace CustomLibrary.Interfaces
     public interface ILibService
     {
         bool AddOrder(Order order);
-
-        bool DeleteOrder(int orderId);
 
         bool CancelOrder(int orderId);
 
