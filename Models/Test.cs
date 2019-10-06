@@ -7,8 +7,5 @@
         public string Name { get; set; }
 
         public bool IsCanceledTest { get; set; }
-
-
-
     }
 }
