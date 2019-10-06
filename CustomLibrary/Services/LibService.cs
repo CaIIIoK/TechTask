@@ -76,9 +76,25 @@ namespace CustomLibrary.Services
             if(!IsTestCanceled)
             {
                 test.IsCanceledTest = true;
+                if(AreAllTestsInOrderCanceled(order.OrderTests))
+                {
+                    order.IsCanceledOrder = true;
+                }
                 return true;
             }            
             return false;
+        }
+
+        public bool AreAllTestsInOrderCanceled(List<Test> tests)
+        {
+            foreach(Test test in tests)
+            {
+                if(!test.IsCanceledTest)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
