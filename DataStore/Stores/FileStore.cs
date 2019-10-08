@@ -10,7 +10,7 @@ namespace DataStore
 {
     public class FileStore : IStore
     {
-        private const string fileName = "orders.json";
+        private const string FileName = "orders.json";
 
         private static string jsonFileName;
 
@@ -86,7 +86,7 @@ namespace DataStore
 
         private static string GetJsonFileName(string assemblyFolder)
         {
-            return Path.Combine(assemblyFolder, fileName);
+            return Path.Combine(assemblyFolder, FileName);
         }
     }
 }

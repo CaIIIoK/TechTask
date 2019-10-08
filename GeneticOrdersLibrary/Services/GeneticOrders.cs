@@ -21,7 +21,6 @@ namespace CustomLibrary.Services
         {
             bool areOrderTestsValid = order.OrderTests != null && !order.OrderTests.Any(x => x.TestId <= 0) 
                 && order.OrderTests.Any();
-
             int testIds = order.OrderTests.Select(x => x.TestId).Distinct().Count();
             bool areTestsInOrderUnique = testIds == order.OrderTests.Count();
 
@@ -31,11 +30,11 @@ namespace CustomLibrary.Services
                 {
                         _store.Add(order);
 
-                        return new Response() { ResponseType = ResponseType.Success, Description = "Order is added" };
+                        return new Response() { ResponseType = ResponseType.Success, Description = "Order is added." };
                 }
             }
 
-            return new Response() { ResponseType = ResponseType.Failed, Description = "Order isn't added" };
+            return new Response() { ResponseType = ResponseType.Failed, Description = "Order isn't added." };
         }
 
         public List<Order> GetAllOrders()
@@ -43,7 +42,7 @@ namespace CustomLibrary.Services
             return _store.Read();
         }
 
-        public bool CancelOrder(int orderId)
+        public Response CancelOrder(int orderId)
         {
             if(IsOrderValid(orderId))
             {
@@ -53,11 +52,12 @@ namespace CustomLibrary.Services
                 {
                     order.IsCanceledOrder = true;
                     _store.Update(order);
-                    return true;
+
+                    return new Response() { ResponseType = ResponseType.Success, Description = "Order is canceled." };
                 }
             }
 
-            return false;
+            return new Response() { ResponseType = ResponseType.Failed, Description = "Order isn't canceled." };
         }
 
         public Order GetOrderById(int orderId)
@@ -70,21 +70,21 @@ namespace CustomLibrary.Services
             return _store.Read().FirstOrDefault(x => x.OrderId == orderId);
         }
 
-        public bool AddTests(int orderId, List<Test> tests)
+        public Response AddTests(int orderId, List<Test> tests)
         {
             int testIds = tests.Select(x => x.TestId).Distinct().Count();
             bool areInputTestsUnique = testIds == tests.Count();
 
             if (!IsOrderValid(orderId) || tests.Any(x => x.TestId <= 0) || !areInputTestsUnique)
             {
-                return false;
+                return new Response() { ResponseType = ResponseType.Failed, Description = "Tests aren't added." };
             }
 
             Order order = GetOrderById(orderId);
             order.OrderTests.AddRange(tests);
             _store.Update(order);
-                     
-            return true;
+
+            return new Response() { ResponseType = ResponseType.Success, Description = "Tests are added." };
         }
 
         private bool IsOrderValid(int orderId)
@@ -104,12 +104,13 @@ namespace CustomLibrary.Services
             return true;
         }
 
-        public bool CancelTest(int orderId, int testId)
+        public Response CancelTest(int orderId, int testId)
         {
             if(!IsOrderValid(orderId))
             {
-                return false;
+                return new Response() { ResponseType = ResponseType.Failed, Description = "Order isn't valid." };
             }
+
             Order order = GetOrderById(orderId);
             Test test = order.OrderTests.FirstOrDefault(x => x.TestId == testId);
 
@@ -130,10 +131,11 @@ namespace CustomLibrary.Services
                 }
 
                 _store.Update(order);
-                return true;
+
+                return new Response() { ResponseType = ResponseType.Success, Description = "Test is canceled." };
             }
 
-            return false;
+            return new Response() { ResponseType = ResponseType.Failed, Description = "Test isn't canceled." };
         }
 
         private bool AreAllTestsInOrderCanceled(List<Test> tests)

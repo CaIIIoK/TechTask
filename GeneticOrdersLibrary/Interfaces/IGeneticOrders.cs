@@ -8,13 +8,13 @@ namespace CustomLibrary.Interfaces
     {
         Response AddOrder(Order order);
 
-        bool CancelOrder(int orderId);
+        Response CancelOrder(int orderId);
 
-        bool CancelTest(int orderId, int testId);
+        Response CancelTest(int orderId, int testId);
 
         Order GetOrderById(int orderId);
 
-        bool AddTests(int orderId, List<Test> tests);
+        Response AddTests(int orderId, List<Test> tests);
 
         List<Order> GetAllOrders();
     }

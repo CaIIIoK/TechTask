@@ -27,14 +27,14 @@ namespace Orders.Controllers
 
         [HttpPut("{id}")]
         [ExceptionFilter]
-        public ActionResult<bool> Cancel(int id)
+        public ActionResult<Response> Cancel(int id)
         {
             return _libService.CancelOrder(id);
         }
 
         [HttpPut("{orderId}/tests/{testId}")]
         [ExceptionFilter]
-        public ActionResult<bool> CancelTest(int orderId, int testId)
+        public ActionResult<Response> CancelTest(int orderId, int testId)
         {
             return _libService.CancelTest(orderId, testId);
         }
@@ -55,7 +55,7 @@ namespace Orders.Controllers
 
         [HttpPost("{orderId}/addtests")]
         [ExceptionFilter]
-        public ActionResult<bool> AddTests(int orderId, [FromBody]List<Test> tests)
+        public ActionResult<Response> AddTests(int orderId, [FromBody]List<Test> tests)
         {
             return _libService.AddTests(orderId, tests);
         }
