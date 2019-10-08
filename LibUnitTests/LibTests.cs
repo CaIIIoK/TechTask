@@ -38,10 +38,11 @@ namespace LibUnitTests
             Order order = new Order();
             order.OrderTests = new List<Test>();
             order.OrderTests.Add(new Test());
+            ResponseType expected = ResponseType.Success;
 
-           //bool IsOrderAdded = libService.AddOrder(order);
+            Response result = libService.AddOrder(order);
 
-            //Assert.True(IsOrderAdded);
+            Assert.Equal(result.ResponseType, expected);
         }
 
         [Fact]

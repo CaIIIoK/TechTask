@@ -8,17 +8,17 @@ namespace DataStore
     public class MemoryStore : IStore
     {
 
-        private static List<Order> OrdersMemoryCollection = new List<Order>();
+        private static List<Order> ordersMemoryCollection = new List<Order>();
 
 
         private static void AddToMemoryCollection(Order order)
         {
-            OrdersMemoryCollection.Add(order);
+            ordersMemoryCollection.Add(order);
         }
 
         private static List<Order> ReadFromMemoryCollection()
         {
-            return OrdersMemoryCollection;
+            return ordersMemoryCollection;
         }
 
         public void Add(Order order)

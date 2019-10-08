@@ -64,7 +64,7 @@ namespace CustomLibrary.Services
         {
             if (orderId <= 0)
             {
-                throw new ArgumentOutOfRangeException("Order ID cant be negative or zero!");
+                throw new ArgumentOutOfRangeException("Order ID is negative or equals zero!");
             }
 
             return _store.Read().FirstOrDefault(x => x.OrderId == orderId);
@@ -116,12 +116,12 @@ namespace CustomLibrary.Services
 
             if (test == null)
             {
-                throw new NullReferenceException("Test can't be NULL");
+                throw new NullReferenceException("Test with specified Id isn't found in order!");
             }
 
-            bool IsTestCanceled = test.IsCanceledTest;
+            bool isTestCanceled = test.IsCanceledTest;
 
-            if (!IsTestCanceled)
+            if (!isTestCanceled)
             {
                 test.IsCanceledTest = true;
 
