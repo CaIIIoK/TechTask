@@ -9,12 +9,20 @@ namespace MemoryStore
 {
     public static class Store
     {
+        private const string fileName = "orders.json";
+
+        private static string jsonFileName;
+
         private static List<Order> OrdersMemoryCollection = new List<Order>();
+
+        static Store()
+        {
+            string assemblyFolder = GetAssemblyFolder();
+            jsonFileName = GetJsonFileName(assemblyFolder);
+        }
 
         private static void WriteToFile(Order order)
         {
-            string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string jsonFileName = Path.Combine(assemblyFolder, "orders.json");
             List<Order> orders = ReadFromFile();
             using (StreamWriter file = File.CreateText(jsonFileName))
             {
@@ -24,10 +32,27 @@ namespace MemoryStore
             }
         }
 
+        private static void WriteToFile(List<Order> orders)
+        {
+            using (StreamWriter file = File.CreateText(jsonFileName))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, orders);
+            }
+        }
+
+        private static string GetAssemblyFolder()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
+        private static string GetJsonFileName(string assemblyFolder)
+        {
+            return Path.Combine(assemblyFolder, fileName);
+        }
+
         private static List<Order> ReadFromFile()
         {
-            string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string jsonFileName = Path.Combine(assemblyFolder, "orders.json");
             using (StreamReader file = File.OpenText(jsonFileName))
             {
                 JsonSerializer serializer = new JsonSerializer();
@@ -40,7 +65,7 @@ namespace MemoryStore
 
                 return new List<Order>();
             }
-            
+
         }
 
         private static void AddToMemoryCollection(Order order)
@@ -55,7 +80,7 @@ namespace MemoryStore
 
         public static void Add(Order order, bool addToMemory)
         {
-            if(addToMemory)
+            if (addToMemory)
             {
                 AddToMemoryCollection(order);
             }
@@ -74,15 +99,24 @@ namespace MemoryStore
 
         public static void Update(Order order, bool addToMemory)
         {
-            var order1 = Read(addToMemory).FirstOrDefault(x => x.OrderId == order.OrderId);
-            order1.OrderTests = order.OrderTests;
-            order1.IsCanceledOrder = order.IsCanceledOrder;
+            List<Order> orders = Read(addToMemory);
+            var orderInStore = orders.FirstOrDefault(x => x.OrderId == order.OrderId);
 
-            if (!addToMemory)
+            if (orderInStore != null)
             {
-                Add(order1, addToMemory);
-            }
+                MapOrders(orderInStore, order);
 
+                if (!addToMemory)
+                {
+                    WriteToFile(orders);
+                }
+            }
+        }
+
+        private static void MapOrders(Order destination, Order source)
+        {
+            destination.OrderTests = source.OrderTests;
+            destination.IsCanceledOrder = source.IsCanceledOrder;
         }
     }
 }

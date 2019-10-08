@@ -4,6 +4,7 @@ using Models;
 using System.Collections.Generic;
 using Xunit;
 using MemoryStore;
+using CustomLibrary.Models;
 
 namespace LibUnitTests
 {
@@ -23,10 +24,11 @@ namespace LibUnitTests
         public void AddOrder_WhenOrderDoesntHaveTests_ReturnsFasle()
         {           
             Order order = new Order();
+            ResponseType expected = ResponseType.Failed;
 
-            bool IsOrderAdded = libService.AddOrder(order);
+            Response result = libService.AddOrder(order);
 
-            Assert.False(IsOrderAdded);
+            Assert.Equal(result.ResponseType, expected);
         }
 
         [Fact]
@@ -36,9 +38,9 @@ namespace LibUnitTests
             order.OrderTests = new List<Test>();
             order.OrderTests.Add(new Test());
 
-            bool IsOrderAdded = libService.AddOrder(order);
+           // bool IsOrderAdded = libService.AddOrder(order);
 
-            Assert.True(IsOrderAdded);
+            //Assert.True(IsOrderAdded);
         }
 
         [Fact]
@@ -47,9 +49,9 @@ namespace LibUnitTests
             Order order = CreateOrder();
             libService.AddOrder(order);
 
-            bool IsOrderIdUnique = libService.AddOrder(order);
+            //bool IsOrderIdUnique = libService.AddOrder(order);
 
-            Assert.False(IsOrderIdUnique);
+           // Assert.False(IsOrderIdUnique);
         }
 
         [Fact]

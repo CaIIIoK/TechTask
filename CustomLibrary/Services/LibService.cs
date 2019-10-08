@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MemoryStore;
+using CustomLibrary.Models;
 
 namespace CustomLibrary.Services
 {
@@ -16,9 +17,15 @@ namespace CustomLibrary.Services
             _IsMemoryStore = IsMemoryStore;
         }
 
-        public bool AddOrder(Order order)
+        public Response AddOrder(Order order)
         {
-            if (order != null && order.OrderTests != null)
+            bool areOrderTestsValid = order.OrderTests != null && !order.OrderTests.Any(x => x.TestId <= 0);
+
+            //вынести
+            int testIds = order.OrderTests.Select(x => x.TestId).Distinct().Count();
+            bool areTestsInOrderUnique = testIds == order.OrderTests.Count();
+
+            if (order != null && areOrderTestsValid && areTestsInOrderUnique)
             {
                 if (!IsOrderAlreadyExists(order.OrderId))
                 {
@@ -26,12 +33,12 @@ namespace CustomLibrary.Services
                     {
                         Store.Add(order, _IsMemoryStore);
 
-                        return true;
+                        return new Response() { ResponseType = ResponseType.Success, Description =  "Order is added" };
                     }
                 }
             }
 
-            return false;
+            return new Response() {ResponseType = ResponseType.Failed, Description = "Order isn't added" };
         }
 
         public List<Order> GetAllOrders()
@@ -81,7 +88,15 @@ namespace CustomLibrary.Services
 
             if (order == null)
             {
+                //change something like DataNotFoundException
                 throw new NullReferenceException("Order cann't be NULL!");
+            }
+
+            bool IsTestIdLessThanZero = order.OrderTests.Any(x => x.TestId <= 0);
+
+            if(IsTestIdLessThanZero)
+            {
+                throw new ArgumentOutOfRangeException("Test ID couldn't be negative");
             }
 
             return order;
@@ -105,10 +120,10 @@ namespace CustomLibrary.Services
 
                 if (AreAllTestsInOrderCanceled(order.OrderTests))
                 {
-                    order.IsCanceledOrder = true;
-                    Store.Update(order, _IsMemoryStore);
+                    order.IsCanceledOrder = true;                    
                 }
 
+                Store.Update(order, _IsMemoryStore);
                 return true;
             }
 

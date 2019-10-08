@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CustomLibrary.Interfaces;
+using CustomLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using TestProject.Filters;
@@ -47,7 +48,7 @@ namespace Orders.Controllers
 
         [HttpPost("create")]
         [ExceptionFilter]
-        public ActionResult<bool> AddOder(Order order)
+        public ActionResult<Response> AddOder(Order order)
         {
             return _libService.AddOrder(order);
         }

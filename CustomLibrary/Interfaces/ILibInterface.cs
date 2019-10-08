@@ -1,11 +1,12 @@
-﻿using Models;
+﻿using CustomLibrary.Models;
+using Models;
 using System.Collections.Generic;
 
 namespace CustomLibrary.Interfaces
 {
     public interface ILibService
     {
-        bool AddOrder(Order order);
+        Response AddOrder(Order order);
 
         bool CancelOrder(int orderId);
 
