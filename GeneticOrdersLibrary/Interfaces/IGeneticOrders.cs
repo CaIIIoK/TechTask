@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CustomLibrary.Interfaces
 {
-    public interface ILibService
+    public interface IGeneticOrders
     {
         Response AddOrder(Order order);
 
@@ -14,7 +14,7 @@ namespace CustomLibrary.Interfaces
 
         Order GetOrderById(int orderId);
 
-        void AddTests(int orderId, List<Test> tests);
+        bool AddTests(int orderId, List<Test> tests);
 
         List<Order> GetAllOrders();
     }

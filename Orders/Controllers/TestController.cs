@@ -11,9 +11,9 @@ namespace Orders.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly ILibService _libService;
+        private readonly IGeneticOrders _libService;
 
-        public OrdersController(ILibService libService)
+        public OrdersController(IGeneticOrders libService)
         {
             _libService = libService;
         }
@@ -51,6 +51,13 @@ namespace Orders.Controllers
         public ActionResult<Response> AddOder(Order order)
         {
             return _libService.AddOrder(order);
+        }
+
+        [HttpPost("{orderId}/addtests")]
+        [ExceptionFilter]
+        public ActionResult<bool> AddTests(int orderId, [FromBody]List<Test> tests)
+        {
+            return _libService.AddTests(orderId, tests);
         }
     }
 }

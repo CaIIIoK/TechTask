@@ -3,25 +3,25 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MemoryStore;
+using DataStore;
 using CustomLibrary.Models;
 
 namespace CustomLibrary.Services
 {
-    public class LibService : ILibService
+    public class GeneticOrders : IGeneticOrders
     {
-        bool _IsMemoryStore;
+        private readonly IStore _store;
 
-        public LibService(bool IsMemoryStore)
+        public GeneticOrders(IStore store)
         {
-            _IsMemoryStore = IsMemoryStore;
+            _store = store;
         }
 
         public Response AddOrder(Order order)
         {
-            bool areOrderTestsValid = order.OrderTests != null && !order.OrderTests.Any(x => x.TestId <= 0);
+            bool areOrderTestsValid = order.OrderTests != null && !order.OrderTests.Any(x => x.TestId <= 0) 
+                && order.OrderTests.Any();
 
-            //вынести
             int testIds = order.OrderTests.Select(x => x.TestId).Distinct().Count();
             bool areTestsInOrderUnique = testIds == order.OrderTests.Count();
 
@@ -29,33 +29,32 @@ namespace CustomLibrary.Services
             {
                 if (!IsOrderAlreadyExists(order.OrderId))
                 {
-                    if (order.OrderTests.Any())
-                    {
-                        Store.Add(order, _IsMemoryStore);
+                        _store.Add(order);
 
-                        return new Response() { ResponseType = ResponseType.Success, Description =  "Order is added" };
-                    }
+                        return new Response() { ResponseType = ResponseType.Success, Description = "Order is added" };
                 }
             }
 
-            return new Response() {ResponseType = ResponseType.Failed, Description = "Order isn't added" };
+            return new Response() { ResponseType = ResponseType.Failed, Description = "Order isn't added" };
         }
 
         public List<Order> GetAllOrders()
         {
-            return Store.Read(_IsMemoryStore);
+            return _store.Read();
         }
 
         public bool CancelOrder(int orderId)
         {
-            Order order = ValidateOrderIdInColletion(orderId);
-            bool IsOrderCanceled = order.IsCanceledOrder;
-
-            if (!IsOrderCanceled)
+            if(IsOrderValid(orderId))
             {
-                order.IsCanceledOrder = !order.IsCanceledOrder;
-                Store.Update(order, _IsMemoryStore);
-                return true;
+                Order order = GetOrderById(orderId);
+
+                if(!order.IsCanceledOrder)
+                {
+                    order.IsCanceledOrder = true;
+                    _store.Update(order);
+                    return true;
+                }
             }
 
             return false;
@@ -68,43 +67,50 @@ namespace CustomLibrary.Services
                 throw new ArgumentOutOfRangeException("Order ID cant be negative or zero!");
             }
 
-            return Store.Read(_IsMemoryStore).FirstOrDefault(x => x.OrderId == orderId);
+            return _store.Read().FirstOrDefault(x => x.OrderId == orderId);
         }
 
-        public void AddTests(int orderId, List<Test> tests)
+        public bool AddTests(int orderId, List<Test> tests)
         {
-            Order order = ValidateOrderIdInColletion(orderId);
+            int testIds = tests.Select(x => x.TestId).Distinct().Count();
+            bool areInputTestsUnique = testIds == tests.Count();
+
+            if (!IsOrderValid(orderId) || tests.Any(x => x.TestId <= 0) || !areInputTestsUnique)
+            {
+                return false;
+            }
+
+            Order order = GetOrderById(orderId);
             order.OrderTests.AddRange(tests);
+            _store.Update(order);
+                     
+            return true;
         }
 
-        private Order ValidateOrderIdInColletion(int orderId)
+        private bool IsOrderValid(int orderId)
         {
             if (orderId < 0)
             {
-                throw new ArgumentOutOfRangeException("Order ID couldn't be negative");
+                return false;
             }
 
             Order order = GetOrderById(orderId);
 
             if (order == null)
             {
-                //change something like DataNotFoundException
-                throw new NullReferenceException("Order cann't be NULL!");
-            }
+                return false;
+            }            
 
-            bool IsTestIdLessThanZero = order.OrderTests.Any(x => x.TestId <= 0);
-
-            if(IsTestIdLessThanZero)
-            {
-                throw new ArgumentOutOfRangeException("Test ID couldn't be negative");
-            }
-
-            return order;
+            return true;
         }
 
         public bool CancelTest(int orderId, int testId)
         {
-            Order order = ValidateOrderIdInColletion(orderId);
+            if(!IsOrderValid(orderId))
+            {
+                return false;
+            }
+            Order order = GetOrderById(orderId);
             Test test = order.OrderTests.FirstOrDefault(x => x.TestId == testId);
 
             if (test == null)
@@ -120,10 +126,10 @@ namespace CustomLibrary.Services
 
                 if (AreAllTestsInOrderCanceled(order.OrderTests))
                 {
-                    order.IsCanceledOrder = true;                    
+                    order.IsCanceledOrder = true;
                 }
 
-                Store.Update(order, _IsMemoryStore);
+                _store.Update(order);
                 return true;
             }
 

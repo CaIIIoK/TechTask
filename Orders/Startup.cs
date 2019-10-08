@@ -1,5 +1,6 @@
 ﻿using CustomLibrary.Interfaces;
 using CustomLibrary.Services;
+using DataStore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,10 @@ namespace Orders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            //TO DO
-            //Read from config file
-            services.AddSingleton<ILibService>(s => new LibService(false));
+            
+            var storeType = GetTypeOfStoreProviderFromConfigFile();
+            IStore store = StoreProviderFactory.GetStoreProvider(storeType);
+            services.AddSingleton<IGeneticOrders>(s => new GeneticOrders(store));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,5 +43,12 @@ namespace Orders
             app.UseHttpsRedirection();
             app.UseMvc();
         }
+
+        private static StoreProviders GetTypeOfStoreProviderFromConfigFile()
+        {            
+            return StoreProviders.Memory;
+        }
+
+
     }
 }

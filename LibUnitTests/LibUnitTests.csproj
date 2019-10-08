@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CustomLibrary\CustomLibrary.csproj" />
+    <ProjectReference Include="..\GeneticOrdersLibrary\GeneticOrdersLibrary.csproj" />
   </ItemGroup>
 
 </Project>

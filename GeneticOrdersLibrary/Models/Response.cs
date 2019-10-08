@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CustomLibrary.Models
+﻿namespace CustomLibrary.Models
 {
     public class Response
     {

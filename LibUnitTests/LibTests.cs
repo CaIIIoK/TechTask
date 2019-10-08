@@ -3,7 +3,7 @@ using CustomLibrary.Services;
 using Models;
 using System.Collections.Generic;
 using Xunit;
-using MemoryStore;
+using DataStore;
 using CustomLibrary.Models;
 
 namespace LibUnitTests
@@ -11,12 +11,13 @@ namespace LibUnitTests
     public class LibTests
     {
 
-        private readonly ILibService libService;
+        private readonly IGeneticOrders libService;
 
         public LibTests()
         {
-            libService = new LibService(true);
-            Store.Read(true).Clear();
+            IStore store = new MemoryStore();
+            libService = new GeneticOrders(store);
+            store.Read().Clear();
         }
 
 
@@ -38,7 +39,7 @@ namespace LibUnitTests
             order.OrderTests = new List<Test>();
             order.OrderTests.Add(new Test());
 
-           // bool IsOrderAdded = libService.AddOrder(order);
+           //bool IsOrderAdded = libService.AddOrder(order);
 
             //Assert.True(IsOrderAdded);
         }
@@ -75,6 +76,8 @@ namespace LibUnitTests
 
             Assert.True(IsOrderCanceled);
         }
+
+        
 
         private Order CreateOrder()
         {
