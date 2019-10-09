@@ -4,11 +4,11 @@ namespace Models
 {
     public class Order
     {
-        public int OrderId { get; set; }
+        public int Id { get; set; }
 
-        public List<Test> OrderTests { get; set; }
+        public List<Test> Tests { get; set; }
 
-        public bool IsCanceledOrder { get; set; }
+        public bool IsCanceled { get; set; }
 
         
     }

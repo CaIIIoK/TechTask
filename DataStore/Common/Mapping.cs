@@ -6,8 +6,8 @@ namespace DataStore.Common
     {
         public static void MapOrders(Order destination, Order source)
         {
-            destination.OrderTests = source.OrderTests;
-            destination.IsCanceledOrder = source.IsCanceledOrder;
+            destination.Tests = source.Tests;
+            destination.IsCanceled = source.IsCanceled;
         }
     }
 }

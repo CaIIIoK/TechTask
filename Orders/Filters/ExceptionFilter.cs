@@ -13,7 +13,7 @@ namespace TestProject.Filters
             string exceptionMessage = context.Exception.Message;
             context.Result = new ContentResult
             {
-                Content = $"В методе {actionName} возникло исключение: \n {exceptionMessage} \n {exceptionStack}"
+                Content = $"In method {actionName} appeared exception: \n {exceptionMessage} \n {exceptionStack}"
             };
             context.ExceptionHandled = true;
         }

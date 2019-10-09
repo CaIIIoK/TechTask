@@ -33,7 +33,7 @@ namespace DataStore
         public void Update(Order order)
         {
             List<Order> orders = Read();
-            var orderInStore = orders.FirstOrDefault(x => x.OrderId == order.OrderId);
+            var orderInStore = orders.FirstOrDefault(x => x.Id == order.Id);
 
             if (orderInStore != null)
             {

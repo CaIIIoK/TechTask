@@ -36,8 +36,8 @@ namespace LibUnitTests
         public void AddOrder_WhenOneTestIsAddedToOrder_ReturnsTrue()
         {
             Order order = new Order();
-            order.OrderTests = new List<Test>();
-            order.OrderTests.Add(new Test());
+            order.Tests = new List<Test>();
+            order.Tests.Add(new Test());
             ResponseType expected = ResponseType.Success;
 
             Response result = libService.AddOrder(order);
@@ -84,11 +84,11 @@ namespace LibUnitTests
         {
             return new Order()
             {
-                OrderId = 1,
-                IsCanceledOrder = false,
-                OrderTests = new List<Test>() {
+                Id = 1,
+                IsCanceled = false,
+                Tests = new List<Test>() {
                     new Test {
-                        TestId = 1,
+                        Id = 1,
                         Name = "Serology"
                     }
                 }

@@ -19,14 +19,14 @@ namespace CustomLibrary.Services
 
         public Response AddOrder(Order order)
         {
-            bool areOrderTestsValid = order.OrderTests != null && !order.OrderTests.Any(x => x.TestId <= 0) 
-                && order.OrderTests.Any();
-            int testIds = order.OrderTests.Select(x => x.TestId).Distinct().Count();
-            bool areTestsInOrderUnique = testIds == order.OrderTests.Count();
+            bool areOrderTestsValid = order.Tests != null && !order.Tests.Any(x => x.Id <= 0) 
+                && order.Tests.Any();
+            int testIds = order.Tests.Select(x => x.Id).Distinct().Count();
+            bool areTestsInOrderUnique = testIds == order.Tests.Count();
 
             if (order != null && areOrderTestsValid && areTestsInOrderUnique)
             {
-                if (!IsOrderAlreadyExists(order.OrderId))
+                if (!IsOrderAlreadyExists(order.Id))
                 {
                         _store.Add(order);
 
@@ -48,9 +48,9 @@ namespace CustomLibrary.Services
             {
                 Order order = GetOrderById(orderId);
 
-                if(!order.IsCanceledOrder)
+                if(!order.IsCanceled)
                 {
-                    order.IsCanceledOrder = true;
+                    order.IsCanceled = true;
                     _store.Update(order);
 
                     return new Response() { ResponseType = ResponseType.Success, Description = "Order is canceled." };
@@ -67,21 +67,21 @@ namespace CustomLibrary.Services
                 throw new ArgumentOutOfRangeException("Order ID is negative or equals zero!");
             }
 
-            return _store.Read().FirstOrDefault(x => x.OrderId == orderId);
+            return _store.Read().FirstOrDefault(x => x.Id == orderId);
         }
 
         public Response AddTests(int orderId, List<Test> tests)
         {
-            int testIds = tests.Select(x => x.TestId).Distinct().Count();
+            int testIds = tests.Select(x => x.Id).Distinct().Count();
             bool areInputTestsUnique = testIds == tests.Count();
 
-            if (!IsOrderValid(orderId) || tests.Any(x => x.TestId <= 0) || !areInputTestsUnique)
+            if (!IsOrderValid(orderId) || tests.Any(x => x.Id <= 0) || !areInputTestsUnique)
             {
                 return new Response() { ResponseType = ResponseType.Failed, Description = "Tests aren't added." };
             }
 
             Order order = GetOrderById(orderId);
-            order.OrderTests.AddRange(tests);
+            order.Tests.AddRange(tests);
             _store.Update(order);
 
             return new Response() { ResponseType = ResponseType.Success, Description = "Tests are added." };
@@ -112,22 +112,22 @@ namespace CustomLibrary.Services
             }
 
             Order order = GetOrderById(orderId);
-            Test test = order.OrderTests.FirstOrDefault(x => x.TestId == testId);
+            Test test = order.Tests.FirstOrDefault(x => x.Id == testId);
 
             if (test == null)
             {
-                throw new NullReferenceException("Test with specified Id isn't found in order!");
+                throw new Exception($"Test with specified Id {testId} isn't found in order!");
             }
 
-            bool isTestCanceled = test.IsCanceledTest;
+            bool isTestCanceled = test.IsCanceled;
 
             if (!isTestCanceled)
             {
-                test.IsCanceledTest = true;
+                test.IsCanceled = true;
 
-                if (AreAllTestsInOrderCanceled(order.OrderTests))
+                if (AreAllTestsInOrderCanceled(order.Tests))
                 {
-                    order.IsCanceledOrder = true;
+                    order.IsCanceled = true;
                 }
 
                 _store.Update(order);
@@ -140,20 +140,13 @@ namespace CustomLibrary.Services
 
         private bool AreAllTestsInOrderCanceled(List<Test> tests)
         {
-            return tests.All(x => x.IsCanceledTest);
+            return tests.All(x => x.IsCanceled);
         }
 
         private bool IsOrderAlreadyExists(int orderId)
         {
             List<Order> orders = GetAllOrders();
-            Order searchingOrder = orders.FirstOrDefault(x => x.OrderId == orderId);
-
-            if (searchingOrder != null)
-            {
-                return true;
-            }
-
-            return false;
+            return orders.Any(x => x.Id == orderId);
         }
     }
 }
