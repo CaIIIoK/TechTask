@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "Orders\TestProject.csproj", "{C17F0B9B-919F-48DC-AE51-9832ACB161BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomLibrary", "CustomLibrary\CustomLibrary.csproj", "{1A543DD5-FD2D-4222-BE87-667FE0282668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticOrdersLibrary", "GeneticOrdersLibrary\GeneticOrdersLibrary.csproj", "{1A543DD5-FD2D-4222-BE87-667FE0282668}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{4F84B782-26D6-4902-B193-D6221043C4C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MemoryStore", "MemoryStore\MemoryStore.csproj", "{078E7646-0741-44FB-97F3-8F6E1D560F8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataStore", "DataStore\DataStore.csproj", "{078E7646-0741-44FB-97F3-8F6E1D560F8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibUnitTests", "LibUnitTests\LibUnitTests.csproj", "{6EEF26C4-1008-44EA-931D-C082C1BD098A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibUnitTests", "LibUnitTests\LibUnitTests.csproj", "{6EEF26C4-1008-44EA-931D-C082C1BD098A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

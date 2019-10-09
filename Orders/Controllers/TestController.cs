@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CustomLibrary.Interfaces;
+using CustomLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using TestProject.Filters;
@@ -10,9 +11,9 @@ namespace Orders.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly ILibService _libService;
+        private readonly IGeneticOrders _libService;
 
-        public OrdersController(ILibService libService)
+        public OrdersController(IGeneticOrders libService)
         {
             _libService = libService;
         }
@@ -26,14 +27,14 @@ namespace Orders.Controllers
 
         [HttpPut("{id}")]
         [ExceptionFilter]
-        public ActionResult<bool> Cancel(int id)
+        public ActionResult<Response> Cancel(int id)
         {
             return _libService.CancelOrder(id);
         }
 
         [HttpPut("{orderId}/tests/{testId}")]
         [ExceptionFilter]
-        public ActionResult<bool> CancelTest(int orderId, int testId)
+        public ActionResult<Response> CancelTest(int orderId, int testId)
         {
             return _libService.CancelTest(orderId, testId);
         }
@@ -47,9 +48,16 @@ namespace Orders.Controllers
 
         [HttpPost("create")]
         [ExceptionFilter]
-        public ActionResult<bool> AddOder(Order order)
+        public ActionResult<Response> AddOder(Order order)
         {
             return _libService.AddOrder(order);
+        }
+
+        [HttpPost("{orderId}/addtests")]
+        [ExceptionFilter]
+        public ActionResult<Response> AddTests(int orderId, [FromBody]List<Test> tests)
+        {
+            return _libService.AddTests(orderId, tests);
         }
     }
 }
